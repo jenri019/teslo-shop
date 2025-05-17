@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import type { Gender, ProductsResponse } from '@products/interfaces/product.interface';
+import type { Gender, Product, ProductsResponse } from '@products/interfaces/product.interface';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -27,5 +27,9 @@ export class ProductsService {
                 gender
             }
         })
+    }
+
+    getProductById(idSlug: string): Observable<Product> {
+        return this._http.get<Product>(`${baseUrl}/products/${idSlug}`);
     }
 }

@@ -15,7 +15,7 @@ export const storeFrontRoutes: Routes = [
                 loadComponent: () => import('./pages/gender-page/gender-page.component')
             },
             {
-                path: 'product/:id',
+                path: 'product/:idSlug',
                 loadComponent: () => import('./pages/product-page/product-page.component')
             },
             {
