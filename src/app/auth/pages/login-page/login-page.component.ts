@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '@auth/services/auth.service';
 
@@ -14,8 +14,9 @@ import { AuthService } from '@auth/services/auth.service';
 export default class LoginPageComponent {
     _formBuilder = inject(FormBuilder);
     _authService = inject(AuthService);
-    hasError = signal(false);
+    router = inject(Router);
     isPosting = signal(false);
+    hasError = signal(false);
     errorMessage = signal('');
 
     loginForm = this._formBuilder.group({
@@ -30,15 +31,20 @@ export default class LoginPageComponent {
             this.showingError('Please fill in all fields correctly.');
             return;
         }
-        this.isPosting.set(false);
 
         const { email = '', password = '' } = this.loginForm.value;
 
         this._authService.login(email!, password!)
-            .subscribe(response => {
-                console.log(response);
+            .subscribe((isAutenticated) => {
+                this.isPosting.set(false);
+                if (isAutenticated) {
+                    this.router.navigateByUrl('/');
+                    return;
+                }
+                this.showingError('Invalid email or password. Please try again.');
             }, error => {
-                this.showingError('Invalid email or password.');
+                this.isPosting.set(false);
+                this.showingError('An error occurred during login.');
             })
 
     }

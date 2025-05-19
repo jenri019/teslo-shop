@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthResponse } from '@auth/interfaces/auth-response.interface';
 import { User } from '@auth/interfaces/user.interface';
@@ -34,7 +34,7 @@ export class AuthService {
         return this._token();
     })
 
-    login(email: string, password: string): Observable<AuthResponse> {
+    login(email: string, password: string): Observable<boolean> {
         return this._http.post<AuthResponse>(`${baseUrl}/auth/login`,
             {
                 email,
@@ -46,7 +46,16 @@ export class AuthService {
                     this._token.set(response.token);
 
                     localStorage.setItem('token', response.token);
+                }),
+                map(() => {
+                    return true;
+                }),
+                catchError((err: any) => {
+                    this._user.set(null);
+                    this._token.set(null);
+                    this._authStatus.set('not-authenticated');
+                    return of(false);
                 })
-            );
+            )
     }
 }
