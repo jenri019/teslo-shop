@@ -58,7 +58,7 @@
 
                 <div class="divider my-2"></div>
 
-                <button (click)="_authService.logout()" class="btn btn-secondary btn-ghost text-accent w-full">Cerrar sessión</button>
+                <button (click)="_authService.logout(); router.navigateByUrl('/')" class="btn btn-secondary btn-ghost text-accent w-full">Cerrar sessión</button>
             </div>
         </div>
         <div class="ml-[220px] w-[calc(100% - 220px)] p-5 flex flex-col flex-1 h-full text-slate-100">

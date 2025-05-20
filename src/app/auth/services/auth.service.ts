@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { AuthResponse } from '@auth/interfaces/auth-response.interface';
 import { User } from '@auth/interfaces/user.interface';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
 const baseUrl = environment.baseUrl;
@@ -16,6 +17,7 @@ export class AuthService {
     private _authStatus = signal<AuthStatus>('checking');
     private _user = signal<User | null>(null);
     private _token = signal<string | null>(localStorage.getItem('token'));
+    private router = inject(Router);
 
     private _http = inject(HttpClient);
 
@@ -39,6 +41,10 @@ export class AuthService {
 
     token = computed<string | null>(() => {
         return this._token();
+    })
+
+    isAdmin = computed(() => {
+        return this._user()?.roles.includes('admin') ?? false;
     })
 
     checkAuthStatus(): Observable<boolean> {
@@ -82,7 +88,7 @@ export class AuthService {
         this._token.set(null);
         this._authStatus.set('not-authenticated');
 
-        //localStorage.removeItem('token');
+        localStorage.removeItem('token');
     }
 
     private handleAuthSuccess({ user, token }: AuthResponse) {
