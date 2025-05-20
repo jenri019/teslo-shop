@@ -98,4 +98,20 @@ export class AuthService {
         this.logout();
         return of(false);
     }
+
+    register(email: string, password: string, fullName: string): Observable<boolean> {
+        return this._http.post<AuthResponse>(`${baseUrl}/auth/register`,
+            {
+                email,
+                password,
+                fullName
+            }).pipe(
+                map(() => {
+                    return true;
+                }),
+                catchError(() => {
+                    return of(false);
+                })
+            )
+    }
 }
