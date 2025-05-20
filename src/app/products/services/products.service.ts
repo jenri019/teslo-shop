@@ -45,12 +45,10 @@ export class ProductsService {
         const key = idSlug;
 
         if (this.productCache.has(key)) {
-            console.log('cache hit');
             return of(this.productCache.get(key)!);
         }
         return this._http.get<Product>(`${baseUrl}/products/${idSlug}`).pipe(
             tap((response) => {
-                console.log('response', response);
                 this.productCache.set(key, response);
             })
         )
