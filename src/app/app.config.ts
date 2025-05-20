@@ -6,6 +6,9 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { logginInterceptor } from '@shared/interceptors/loggin.interceptor';
 import { authInterceptor } from '@auth/interceptors/auth.interceptor';
 
+import { provideImgixLoader } from '@angular/common';
+import { IMAGE_CONFIG } from '@angular/common';
+
 export const appConfig: ApplicationConfig = {
     providers: [
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -16,6 +19,13 @@ export const appConfig: ApplicationConfig = {
                 //logginInterceptor,
                 authInterceptor
             ])
-        )
+        ),
+        provideImgixLoader('http://localhost:3000/'), // o tu base URL
+        {
+            provide: IMAGE_CONFIG, useValue: {
+                disableImageSizeWarning: true,
+                disableImageLazyLoadWarning: true
+            }
+        }
     ]
 };
