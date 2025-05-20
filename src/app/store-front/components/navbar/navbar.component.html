@@ -39,7 +39,7 @@
     </div>
     <div class="navbar-end gap-4">
         @if (_authService.authStatus() === 'authenticated') {
-            <button class="btn btn-ghost">
+            <button class="btn btn-ghost" routerLink="/admin/dashboard">
                 {{ _authService.user()?.fullName }}
             </button>
             <button class="btn btn-sm btn-error" (click)="_authService.logout()">

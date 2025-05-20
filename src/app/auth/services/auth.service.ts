@@ -18,10 +18,13 @@ export class AuthService {
     private _user = signal<User | null>(null);
     private _token = signal<string | null>(localStorage.getItem('token'));
     private router = inject(Router);
+    private _authCacheResponse = new Map<string, AuthResponse>();
+    private _authCacheResponseExp = signal(0);
 
     private _http = inject(HttpClient);
 
-    productsResource = rxResource({
+    // Resource to check the authentication status aat the start
+    checkStatusResource = rxResource({
         loader: () => {
             return this.checkAuthStatus()
         }
@@ -49,23 +52,33 @@ export class AuthService {
 
     checkAuthStatus(): Observable<boolean> {
         const token = localStorage.getItem('token');
+
         if (!token) {
             this.logout();
             return of(false);
         }
 
-        return this._http.get<AuthResponse>(`${baseUrl}/auth/check-status`, {
-            /* headers: {
-                Authorization: `Bearer ${token}`
-            } */
-        }).pipe(
-            map((response) => {
-                return this.handleAuthSuccess(response);
-            }),
-            catchError((err: any) => {
-                return this.handleAuthError(err);
-            })
-        )
+        if (this._authCacheResponse.has('user')) {
+            console.log('Cache hit');
+            const differenceInMinutes = (Date.now() - this._authCacheResponseExp()) / (1000 * 60);
+
+            if (differenceInMinutes <= 15) {
+                console.log('Cache hit and valid');
+                this.handleAuthSuccess(this._authCacheResponse.get('user')!);
+                return of(true);
+            }
+        }
+
+        return this._http.get<AuthResponse>(`${baseUrl}/auth/check-status`, {})
+            .pipe(
+                tap((resp) => {
+                    console.log('Validating token');
+                    this._authCacheResponse.set('user', resp);
+                    this._authCacheResponseExp.set(Date.now());
+                }),
+                map((resp) => this.handleAuthSuccess(resp)),
+                catchError((error) => this.handleAuthError(error))
+            );
     }
 
     login(email: string, password: string): Observable<boolean> {
