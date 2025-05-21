@@ -59,11 +59,9 @@ export class AuthService {
         }
 
         if (this._authCacheResponse.has('user')) {
-            console.log('Cache hit');
             const differenceInMinutes = (Date.now() - this._authCacheResponseExp()) / (1000 * 60);
 
             if (differenceInMinutes <= 15) {
-                console.log('Cache hit and valid');
                 this.handleAuthSuccess(this._authCacheResponse.get('user')!);
                 return of(true);
             }
@@ -72,7 +70,6 @@ export class AuthService {
         return this._http.get<AuthResponse>(`${baseUrl}/auth/check-status`, {})
             .pipe(
                 tap((resp) => {
-                    console.log('Validating token');
                     this._authCacheResponse.set('user', resp);
                     this._authCacheResponseExp.set(Date.now());
                 }),

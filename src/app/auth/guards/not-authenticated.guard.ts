@@ -7,7 +7,6 @@ export const NotAuthenticatedGuard: CanMatchFn = async (
     route: Route,
     segments: UrlSegment[]
 ) => {
-    console.log('NotAuthenticatedGuard');
     const _authService = inject(AuthService);
     const router = inject(Router);
 

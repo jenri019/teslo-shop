@@ -2,11 +2,23 @@
 <h3 class="text-lg">Total de productos
     <span class="text-accent">25</span>
 </h3>
-<div class="divider">
+<div class="divider"></div>
+<div class="flex gap-2 items-center">
+    <app-pagination
+        [totalPages]="productsResource.value()?.pages ?? 0"
+        [currentPage]="_paginationService.currentPage()" />
+
+    <select class="select select-bordered w-32"
+        routerLink="/admin/products"
+        (change)="limitPerPageChange(+selectLimitPerPage.value)"
+        #selectLimitPerPage
+    >
+        <option value="10" selected>10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
 </div>
-<app-pagination
-    [totalPages]="productsResource.value()?.pages ?? 0"
-    [currentPage]="_paginationService.currentPage()" />
 
 @if (productsResource.isLoading()) {
     <div class="flex h-full items-center justify-center">

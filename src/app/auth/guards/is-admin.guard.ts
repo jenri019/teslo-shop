@@ -7,7 +7,6 @@ export const isAdminGuard: CanMatchFn = async (
     route: Route,
     segments: UrlSegment[]
 ) => {
-    console.log('IsAdminGuard');
     const _authService = inject(AuthService);
     const router = inject(Router);
 
