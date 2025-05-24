@@ -25,10 +25,22 @@
         <!-- Botones para el género -->
         <div class="grid grid-cols-4 gap-2">
             <!-- <button class="btn btn-sm btn-outline">Masculino</button> -->
-            <button type="button" class="btn btn-sm btn-primary">Masculino</button>
-            <button type="button" class="btn btn-sm btn-accent">Femenino</button>
-            <button type="button" class="btn btn-sm btn-warning">Kid</button>
-            <button type="button" class="btn btn-sm btn-secondary">Unisex</button>
+            <button type="button"
+                [class.btn-primary]="productForm.value.gender === 'men'"
+                (click)="productForm.patchValue({ gender: 'men' })"
+                class="btn btn-sm">Masculino</button>
+            <button type="button"
+                [class.btn-accent]="productForm.value.gender === 'women'"
+                (click)="productForm.patchValue({ gender: 'women' })"
+                class="btn btn-sm">Femenino</button>
+            <button type="button"
+                [class.btn-warning]="productForm.value.gender === 'kid'"
+                (click)="productForm.patchValue({ gender: 'kid' })"
+                class="btn btn-sm">Kid</button>
+            <button type="button"
+                [class.btn-secondary]="productForm.value.gender === 'unisex'"
+                (click)="productForm.patchValue({ gender: 'unisex' })"
+                class="btn btn-sm">Unisex</button>
         </div>
 
         <!-- <select class="select select-bordered w-full">
@@ -40,7 +52,10 @@
         <!-- Sizes -->
         <div class="grid grid-cols-6 gap-2">
             @for (size of sizes; track size) {
-            <button type="button" class="btn btn-sm btn-outline">{{ size }}</button>
+                <button type="button"
+                class="btn btn-sm"
+                [class.btn-primary]="productForm.value.sizes?.includes(size)"
+                (click)="oonSizeChange(size)">{{ size }}</button>
             }
         </div>
     </div>
