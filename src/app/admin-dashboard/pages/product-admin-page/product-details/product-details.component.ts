@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductCarouselComponent } from '@products/components/product-carousel/product-carousel.component';
 import { Product } from '@products/interfaces/product.interface';
@@ -12,7 +12,7 @@ import { FormUtils } from '@utils/form-utils';
     ],
     templateUrl: './product-details.component.html',
 })
-export class ProductDetailsComponent {
+export class ProductDetailsComponent implements OnInit {
     product = input.required<Product>();
     sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
@@ -29,6 +29,17 @@ export class ProductDetailsComponent {
         tags: [''],
         gender: ['men', [Validators.required, Validators.pattern(/men|women|kid|unisex/)]],
     });
+
+    ngOnInit() {
+        this.setFormValue(this.product());
+    }
+
+    setFormValue(formLike: Partial<Product>) {
+        this.productForm.reset(this.product() as any);
+        this.productForm.patchValue({ tags: formLike.tags?.join(', ') });
+        //this.productForm.patchValue(formLike as any);
+
+    }
 
     onSubmit() {
         console.log(this.productForm.value);
