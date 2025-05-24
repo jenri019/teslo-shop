@@ -25,8 +25,8 @@
     themes: light --default, dark --prefersdark;
 }
 
-.btn-primary:disabled,
-.btn-primary[disabled] {
+.btn:disabled,
+.btn[disabled] {
     background-color: #bdbdbd;
     color: #ffffff;
     cursor: not-allowed;
