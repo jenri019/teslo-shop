@@ -41,13 +41,26 @@ export class ProductsService {
         )
     }
 
-    getProductById(idSlug: string): Observable<Product> {
+    getProductByIdSlug(idSlug: string): Observable<Product> {
         const key = idSlug;
 
         if (this.productCache.has(key)) {
             return of(this.productCache.get(key)!);
         }
         return this._http.get<Product>(`${baseUrl}/products/${idSlug}`).pipe(
+            tap((response) => {
+                this.productCache.set(key, response);
+            })
+        )
+    }
+
+    getProductById(id: string): Observable<Product> {
+        const key = id;
+
+        if (this.productCache.has(key)) {
+            return of(this.productCache.get(key)!);
+        }
+        return this._http.get<Product>(`${baseUrl}/products/${id}`).pipe(
             tap((response) => {
                 this.productCache.set(key, response);
             })
