@@ -6,14 +6,15 @@ import { PaginationService } from '@shared/services/pagination.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { tap } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-products-admin-page',
     imports: [
         FormsModule,
         ProductTableComponent,
-        PaginationComponent
+        PaginationComponent,
+        RouterLink
     ],
     templateUrl: './products-admin-page.component.html',
 })
