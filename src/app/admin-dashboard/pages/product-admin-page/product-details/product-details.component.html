@@ -67,9 +67,12 @@
     <!-- Imágenes -->
     <div class="flex flex-col gap-2">
         <div class="flex justify-end h-12">
-            <button class="btn btn-secondary" [disabled]="!productForm.valid" type="submit">
-                <span class="loading loading-spinner loading-sm"></span>
-                Guardar
+            <button class="btn btn-secondary" [disabled]="!productForm.valid || isLoading()" type="submit">
+                @if (isLoading()) {
+                    <span class="loading loading-spinner loading-sm"></span>
+                } @else {
+                    Guardar
+                }
             </button>
         </div>
 
@@ -78,3 +81,9 @@
         <input type="file" class="file-input file-input-bordered w-full mt-4" />
     </div>
 </form>
+
+@if (wasSaved()) {
+    <div class="alert alert-success fixed animate-fadeIn top-5 left-1/2 -translate-x-1/2">
+        <span>Datos actualizados correctamente</span>
+    </div>
+}

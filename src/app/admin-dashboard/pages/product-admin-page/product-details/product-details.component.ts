@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductCarouselComponent } from '@products/components/product-carousel/product-carousel.component';
 import { Product } from '@products/interfaces/product.interface';
@@ -6,6 +6,7 @@ import { FormUtils } from '@utils/form-utils';
 import { FormErrorLabelComponent } from "../../../../shared/components/form-error-label/form-error-label.component";
 import { ProductsService } from '@products/services/products.service';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'product-details',
@@ -23,6 +24,9 @@ export class ProductDetailsComponent implements OnInit {
     _productsService = inject(ProductsService);
     _formBuilder = inject(FormBuilder);
     _router = inject(Router);
+
+    isLoading = signal(false);
+    wasSaved = signal(false);
 
     productForm = this._formBuilder.group({
         title: ['', Validators.required],
@@ -54,7 +58,8 @@ export class ProductDetailsComponent implements OnInit {
         this.productForm.patchValue({ sizes: currentSizes });
     }
 
-    onSubmit() {
+    async onSubmit() {
+        this.isLoading.set(true);
         const formValue = this.productForm.value;
         const productLike: Partial<Product> = {
             ...(formValue as any),
@@ -62,21 +67,20 @@ export class ProductDetailsComponent implements OnInit {
         }
 
         if (this.product().id === 'new') {
-            this._productsService.createProduct(productLike)
-                .subscribe({
-                    next: (response) => {
-                        this._router.navigate(['/admin/product', response.id]);
-                    }, error: (error) => {
-                    }
-                });
+            const product = await firstValueFrom(
+                this._productsService.createProduct(productLike)
+            );
+            this._router.navigate(['/admin/product', product.id]);
         }
         else {
-            this._productsService.updateProduct(this.product().id, productLike)
-                .subscribe({
-                    next: (response) => {
-                    }, error: (error) => {
-                    }
-                });
+            await firstValueFrom(
+                this._productsService.updateProduct(this.product().id, productLike)
+            );
         }
+        this.isLoading.set(false);
+        this.wasSaved.set(true);
+        setTimeout(() => {
+            this.wasSaved.set(false);
+        }, 2000);
     }
 }
