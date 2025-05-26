@@ -40,7 +40,6 @@ export default class ProductsAdminPageComponent {
                 limit: request.limit,
             }).pipe(
                 tap((response) => {
-                    console.log('Loading products...', response)
                 })
             )
         }

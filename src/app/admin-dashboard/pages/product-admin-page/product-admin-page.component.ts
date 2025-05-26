@@ -28,7 +28,6 @@ export default class ProductAdminPageComponent {
         loader: ({ request }) => {
             return this._productsService.getProductById(request.id).pipe(
                 tap((response) => {
-                    console.log('Loading products...', response)
                 })
             )
         }
