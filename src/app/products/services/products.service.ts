@@ -66,4 +66,11 @@ export class ProductsService {
             })
         )
     }
+
+    updateProduct(id: string, productLike: Partial<Product>): Observable<Product> {
+        return this._http.patch<Product>(`${baseUrl}/products/${id}`, productLike).pipe(
+            tap((response) => {
+            })
+        );
+    }
 }

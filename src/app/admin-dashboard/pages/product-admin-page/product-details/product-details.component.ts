@@ -4,6 +4,7 @@ import { ProductCarouselComponent } from '@products/components/product-carousel/
 import { Product } from '@products/interfaces/product.interface';
 import { FormUtils } from '@utils/form-utils';
 import { FormErrorLabelComponent } from "../../../../shared/components/form-error-label/form-error-label.component";
+import { ProductsService } from '@products/services/products.service';
 
 @Component({
     selector: 'product-details',
@@ -18,6 +19,7 @@ export class ProductDetailsComponent implements OnInit {
     product = input.required<Product>();
     sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
+    _productsService = inject(ProductsService);
     _formBuilder = inject(FormBuilder);
 
     productForm = this._formBuilder.group({
@@ -51,6 +53,18 @@ export class ProductDetailsComponent implements OnInit {
     }
 
     onSubmit() {
-        console.log(this.productForm.value);
+        const formValue = this.productForm.value;
+        const productLike: Partial<Product> = {
+            ...(formValue as any),
+            tags: formValue.tags?.toLowerCase().split(',').map(tag => tag.trim()) ?? [],
+        }
+        this._productsService.updateProduct(this.product().id, productLike)
+            .subscribe({
+                next: (response) => {
+                    console.log('Product updated successfully', response);
+                }, error: (error) => {
+                    console.error('Error updating product', error);
+                }
+            });
     }
 }
