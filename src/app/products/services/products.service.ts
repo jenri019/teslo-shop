@@ -104,11 +104,21 @@ export class ProductsService {
     }
 
     createProduct(productLike: Partial<Product>, imageFileList?: FileList): Observable<Product> {
-        return this._http.post<Product>(`${baseUrl}/products`, productLike).pipe(
-            tap((response) => {
-                this.updateProductCache(response, true);
-            })
-        );
+        const currentImages = productLike.images ?? [];
+
+        return this.uploadImages(imageFileList)
+            .pipe(
+                map(imageNames => ({
+                    ...productLike,
+                    images: [...currentImages, ...imageNames]
+                })),
+                switchMap((createdProduct) => {
+                    return this._http.post<Product>(`${baseUrl}/products`, createdProduct)
+                }),
+                tap((response) => {
+                    this.updateProductCache(response, true);
+                })
+            )
     }
 
     updateProductCache(product: Product, clearCache: boolean): void {

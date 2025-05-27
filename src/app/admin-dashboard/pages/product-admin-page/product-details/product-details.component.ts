@@ -81,26 +81,20 @@ export class ProductDetailsComponent implements OnInit {
                 const product = await firstValueFrom(
                     this._productsService.createProduct(productLike, this.imageFileList)
                 );
-                this._router.navigate(['/admin/product', product.id]);
+                this.showSavedMessage(2000, true, product.id);
             } else {
-                const product = await firstValueFrom(
+                await firstValueFrom(
                     this._productsService.updateProduct(this.product().id, productLike, this.imageFileList)
                 );
-                console.log('Product updated:', product);
+                this.showSavedMessage(2000, false);
             }
-
-            this.wasSaved.set(true);
-            setTimeout(() => {
-                this.wasSaved.set(false);
-            }, 2000);
         } catch (error: any) {
+            this.isLoading.set(false);
             this.errorMessage.set(error.error.message[0]);
             this.hasError.set(true);
             setTimeout(() => {
                 this.hasError.set(false);
             }, 2000);
-        } finally {
-            this.isLoading.set(false);
         }
     }
 
@@ -110,5 +104,19 @@ export class ProductDetailsComponent implements OnInit {
             return URL.createObjectURL(file);
         });
         this.tempImages.set(imagesUrls);
+    }
+
+    async showSavedMessage(durationMs = 2000, redirect: boolean, id?: string) {
+        this.isLoading.set(false);
+        this.wasSaved.set(true);
+        if (redirect) {
+            await new Promise(resolve => setTimeout(resolve, durationMs));
+            this.wasSaved.set(false);
+            this._router.navigate(['/admin/product/', id]);
+        } else {
+            setTimeout(() => {
+                this.wasSaved.set(false);
+            }, durationMs);
+        }
     }
 }
