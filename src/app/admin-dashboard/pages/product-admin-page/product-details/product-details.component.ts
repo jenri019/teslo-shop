@@ -28,6 +28,9 @@ export class ProductDetailsComponent implements OnInit {
     isLoading = signal(false);
     wasSaved = signal(false);
 
+    hasError = signal(false);
+    errorMessage = signal('');
+
     imageFileList: FileList | undefined = undefined;
     tempImages = signal<string[]>([]);
 
@@ -73,23 +76,32 @@ export class ProductDetailsComponent implements OnInit {
             ...(formValue as any),
             tags: formValue.tags?.toLowerCase().split(',').map(tag => tag.trim()) ?? [],
         }
+        try {
+            if (this.product().id === 'new') {
+                const product = await firstValueFrom(
+                    this._productsService.createProduct(productLike, this.imageFileList)
+                );
+                this._router.navigate(['/admin/product', product.id]);
+            } else {
+                const product = await firstValueFrom(
+                    this._productsService.updateProduct(this.product().id, productLike, this.imageFileList)
+                );
+                console.log('Product updated:', product);
+            }
 
-        if (this.product().id === 'new') {
-            const product = await firstValueFrom(
-                this._productsService.createProduct(productLike)
-            );
-            this._router.navigate(['/admin/product', product.id]);
+            this.wasSaved.set(true);
+            setTimeout(() => {
+                this.wasSaved.set(false);
+            }, 2000);
+        } catch (error: any) {
+            this.errorMessage.set(error.error.message[0]);
+            this.hasError.set(true);
+            setTimeout(() => {
+                this.hasError.set(false);
+            }, 2000);
+        } finally {
+            this.isLoading.set(false);
         }
-        else {
-            await firstValueFrom(
-                this._productsService.updateProduct(this.product().id, productLike)
-            );
-        }
-        this.isLoading.set(false);
-        this.wasSaved.set(true);
-        setTimeout(() => {
-            this.wasSaved.set(false);
-        }, 2000);
     }
 
     onFilesChanged(fileList: FileList | null) {

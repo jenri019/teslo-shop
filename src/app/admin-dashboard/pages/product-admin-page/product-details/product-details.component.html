@@ -99,3 +99,9 @@
         <span>Datos actualizados correctamente</span>
     </div>
 }
+
+@if (hasError()) {
+    <div class="alert alert-error fixed animate-fadeIn top-5 left-1/2 -translate-x-1/2">
+        <span>{{ errorMessage() }}</span>
+    </div>
+}
