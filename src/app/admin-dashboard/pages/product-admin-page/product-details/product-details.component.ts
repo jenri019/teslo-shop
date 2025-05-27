@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductCarouselComponent } from '@products/components/product-carousel/product-carousel.component';
 import { Product } from '@products/interfaces/product.interface';
@@ -27,6 +27,14 @@ export class ProductDetailsComponent implements OnInit {
 
     isLoading = signal(false);
     wasSaved = signal(false);
+
+    imageFileList: FileList | undefined = undefined;
+    tempImages = signal<string[]>([]);
+
+    imagesToCarousel = computed(() => {
+        const images = [...this.product().images, ...this.tempImages()];
+        return images;
+    })
 
     productForm = this._formBuilder.group({
         title: ['', Validators.required],
@@ -82,5 +90,13 @@ export class ProductDetailsComponent implements OnInit {
         setTimeout(() => {
             this.wasSaved.set(false);
         }, 2000);
+    }
+
+    onFilesChanged(fileList: FileList | null) {
+        this.imageFileList = fileList ?? undefined;
+        const imagesUrls = Array.from(fileList ?? []).map(file => {
+            return URL.createObjectURL(file);
+        });
+        this.tempImages.set(imagesUrls);
     }
 }
