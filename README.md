@@ -1,60 +1,73 @@
-# Front
+# Teslo-Shop
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.5.
+Teslo-Shop is an online store built with Angular as part of the Angular 2025 course, allowing users to explore, search, and manage products from different categories and genders. It includes authentication and an admin dashboard.
 
-## Development server
+## Requirements
 
-To start a local development server, run:
+Make sure you have the following requirements installed before running the application:
 
-```bash
-ng serve
+### 1. Node.js
+
+**Check if installed:**
+```sh
+node -v
+```
+**Install Node.js:**  
+Download and install from [https://nodejs.org/](https://nodejs.org/)
+
+### 2. npm (Node Package Manager)
+
+**Check if installed:**
+```sh
+npm -v
+```
+npm is installed automatically with Node.js. If you need to reinstall:
+```sh
+npm install -g npm
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### 3. Angular CLI
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+**Check if installed:**
+```sh
+ng version
+```
+**Install Angular CLI:**
+```sh
+npm install -g @angular/cli
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Instructions to clone, install dependencies, and run the project
 
-```bash
-ng generate --help
-```
+### 1. Backend
 
-## Building
+Go to the backend repository at [https://github.com/Klerith/nest-teslo-shop/tree/complete-backend-paginated](https://github.com/Klerith/nest-teslo-shop/tree/complete-backend-paginated) and follow the instructions provided there.
 
-To build the project run:
+### 2. Frontend
 
-```bash
-ng build
-```
+Follow these steps to set up and run the Angular frontend:
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+1. **Clone the repository:**
+   ```sh
+   git clone <https://github.com/jenri019/teslo-shop.git>
+   cd teslo-shop
+   ```
 
-## Running unit tests
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+3. **Run the application:**
 
-```bash
-ng test
-```
+   - To start the app:
+     ```sh
+     ng serve
+     ```
 
-## Running end-to-end tests
+   - To start the app and automatically open it in your default browser:
+     ```sh
+     ng serve -o
+     ```
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-"# teslo-shop" 
+     This will build the project and serve it at [http://localhost:4200/](http://localhost:4200/).
